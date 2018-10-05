@@ -5,28 +5,35 @@
 //  Created by Mika on 2018-09-27.
 //  Copyright © 2018 Mika. All rights reserved.
 //
-
 import UIKit
-var textList = [String]()
 
-class ViewController: UIViewController{
-   
-
+class ViewController: UIViewController {
+    
+    
     @IBOutlet weak var textField: UITextField!
+    var todoList = [Any]()
+    var saveData: UserDefaults = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
     }
     
-    @IBAction func save() {
-        //変数に入力内容を入れる
-        textList.append(textField.text!)
-        //追加ボタンを押したらフィールドを空にする
+    override func viewWillAppear(_ animated: Bool) {
         textField.text = ""
-        //変数の中身をUDに追加
-        UserDefaults.standard.set(textList, forKey: "textList" )
     }
-
-
+    
+    @IBAction func save(_ sender: Any) {
+        
+        if textField.text != "" {
+            
+            todoList.append(textField.text!)
+            saveData.set(todoList, forKey:"todo")
+            
+        }
+        else {
+            
+        }
+    }
 }
-

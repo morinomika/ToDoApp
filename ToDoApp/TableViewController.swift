@@ -8,33 +8,55 @@
 
 import UIKit
 
-class TableViewController: UIViewController , UITableViewDataSource, UITableViewDelegate{
+class todoViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var table: UITableView!
     
+    
+    var saveData: UserDefaults = UserDefaults.standard
+    
+    var todoList: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.delegate = self
-        tableView.dataSource = self
-        // Do any additional setup after loading the view.
-        if UserDefaults.standard.object(forKey: "textList") != nil {
-            textList = UserDefaults.standard.object(forKey: "textList") as! [String]
+        
+        table.dataSource = self
+        table.delegate = self
+        
+        if saveData.array(forKey: "todo") != nil {
+            todoList = saveData.array(forKey: "todo") as! [String]
         }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // セルの型を作る
-        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        // セルに表示するテキストを作る
-        cell.textLabel?.text = textList[indexPath.row]
-        // セルをリターンする
-        return cell
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // 配列「data」の要素数
-        return textList.count
+        return todoList.count
     }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
+        todoList = saveData.object(forKey: "todo") as! [String]
+        cell?.textLabel?.text = todoList[indexPath.row]
+        
+        return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            todoList.remove(at: indexPath.row)
+            table.deleteRows(at: [indexPath], with: .fade)
+        }
+        
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        if saveData.array(forKey: "todo") != nil {
+            todoList = saveData.array(forKey: "todo") as! [String]
+        }
+        table.reloadData()
+    }
+    
     
 
 }
